@@ -25,22 +25,14 @@ usage() {
   echo "Usage: $0 [options]"
   echo ""
   echo "Options:"
-  echo "  -a, --all                 No filtering is done to the output."
-  echo "  -t, --total               Filter only results from 'total.*' at the output."
-  echo "  -n, --num-query           Filter only results from 'num.query.*' field. at the output."
-  echo "  -m, --mem                 Filter only results from 'mem.*' field. at the output."
-  echo "  -r, --answer-rcode        Filter only results from 'num.answer.rcode.*' field at the output."
+  echo "  -f, --filter ARGS         Filter the output by columns, passed as a string."
   echo "  -h, --help                Display this help message."
 }
 
 # Parse CLI options
 while [[ "$#" -gt 0 ]]; do
   case $1 in
-    -a|--all) unbound_option="all"; shift ;;
-    -t|--total) unbound_option="total"; shift ;;
-    -n|--num-query) unbound_option="num_query"; shift ;;
-    -m|--mem) unbound_option="mem"; shift ;;
-    -r|--answer-rcode) unbound_option="answer_rcode"; shift ;;
+    -f|--filter) unbound_filter=${@:2}; shift ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown option: $1"; usage; exit 1 ;;
   esac
@@ -48,14 +40,8 @@ while [[ "$#" -gt 0 ]]; do
 done
 
 # Main logic
-if [[ "$unbound_option" == 'all' ]]; then
+if [ ${#unbound_filter[@]} -ne 0 ]; then
+  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ',' '\n' | grep $unbound_filter | tr '\n' ', '
+else
   $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n'
-elif [[ "$unbound_option" == 'total' ]]; then
-  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ',' '\n' | grep 'total.' | tr '\n' ', '
-elif [[ "$unbound_option" == 'num_query' ]]; then
-  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ',' '\n' | grep 'num.query' | tr '\n' '; '
-elif [[ "$unbound_option" == 'mem' ]]; then
-  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ',' '\n' | grep 'mem.query' | tr '\n' ', '
-elif [[ "$unbound_option" == 'answer_rcode' ]]; then
-  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ',' '\n' | grep 'num.answer.rcode' | tr '\n' ', '
 fi
