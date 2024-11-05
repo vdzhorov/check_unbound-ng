@@ -51,11 +51,11 @@ done
 if [[ "$unbound_option" == 'all' ]]; then
   $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n'
 elif [[ "$unbound_option" == 'total' ]]; then
-  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ';' '\n' | grep 'total.' | tr '\n' '; '
+  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ',' '\n' | grep 'total.' | tr '\n' ', '
 elif [[ "$unbound_option" == 'num_query' ]]; then
-  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ';' '\n' | grep 'num.query' | tr '\n' '; '
+  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ',' '\n' | grep 'num.query' | tr '\n' '; '
 elif [[ "$unbound_option" == 'mem' ]]; then
-  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ';' '\n' | grep 'mem.query' | tr '\n' '; '
+  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ',' '\n' | grep 'mem.query' | tr '\n' ', '
 elif [[ "$unbound_option" == 'answer_rcode' ]]; then
-  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ';' '\n' | grep 'num.answer.rcode' | tr '\n' '; '
+  $unboundcontrol | grep -v thread | grep -v histogram | grep -v time. | sed 's/$/, /' | tr -d '\n' | tr ',' '\n' | grep 'num.answer.rcode' | tr '\n' ', '
 fi
